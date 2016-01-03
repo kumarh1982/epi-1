@@ -1,8 +1,9 @@
 class Node:
-  def __init__(self, data=None, left=None, right=None):
-    self.left  = left
-    self.right = right
-    self.data  = data
+  def __init__(self, data=None, left=None, right=None, parent=None):
+    self.left   = left
+    self.right  = right
+    self.data   = data
+    self.parent = parent
 
 class BinaryTree:
   def __init__(self, data):
@@ -23,7 +24,7 @@ class BinaryTree:
     yield node.data
     for elem in self.inorder(node.right): yield elem
 
-  def parse_tree(self, data, left=None, right=None):
+  def parse_tree(self, data, left=None, right=None, parent=None):
     if left is None:
       left = 0
 
@@ -35,9 +36,12 @@ class BinaryTree:
 
     middle = (left + right) // 2
 
-    root = Node(data[middle])
-    root.left  = self.parse_tree(data, left, middle - 1)
-    root.right = self.parse_tree(data, middle + 1, right)
+    root       = Node(data[middle])
+    root.left  = self.parse_tree(data, left, middle - 1, root)
+    root.right = self.parse_tree(data, middle + 1, right, root)
+
+    if parent:
+      root.parent = parent
 
     return root
 
